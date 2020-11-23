@@ -1,0 +1,24 @@
+sg-0d28fd33d5a868052
+subnet-fd538396
+i-0293e81140af56ec5
+
+"ImageId": "ami-0a11fe7c00a4e4883" 
+18.188.229.228
+
+aws ec2 create-security-group --group-name "Lab3" --description "22, 80, 443" --region us-east-2
+
+
+aws ec2 authorize-security-group-ingress --group-id sg-0d28fd33d5a868052 --protocol tcp --port 22 --cidr 0.0.0.0/0
+aws ec2 authorize-security-group-ingress --group-id sg-0d28fd33d5a868052 --protocol tcp --port 80 --cidr 0.0.0.0/0
+aws ec2 authorize-security-group-ingress --group-id sg-0d28fd33d5a868052 --protocol tcp --port 443 --cidr 0.0.0.0/0
+
+aws ec2 create-key-pair --key-name lab3 --query 'KeyMaterial' --output text > MyKeyPair.txt
+
+aws ec2 modify-subnet-attribute --subnet-id subnet-fd538396 --map-public-ip-on-launch
+
+aws ec2 run-instances --image-id ami-07bc0b7b8fe124499 --count 1 --instance-type t2.micro --key-name lab3 --security-group-ids sg-0d28fd33d5a868052 --subnet-id subnet-fd538396 --user-data file://UserData.txt --region us-east-2
+
+aws ec2 create-tags --resources i-0293e81140af56ec5 --tags Key=Role,Value=WebServer
+
+aws ec2 create-image --instance-id i-0293e81140af56ec5 --name "AMI 3"
+aws ec2 run-instances --image-id ami-0a11fe7c00a4e4883 --count 1 --instance-type t2.micro --key-name key --associate-public-ip-address --security-group-ids sg-0e29c3b61db743304
