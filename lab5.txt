@@ -1,0 +1,22 @@
+arn:aws:sns:us-east-2:414886453809:ELB-Check
+
+arn:aws:elasticloadbalancing:us-east-2:414886453809:targetgroup/Lab4-Target/1d11c98987dba52e
+
+i-074256336ec2eaabe
+
+
+
+
+
+aws sns create-topic --name ELB-Check --query "TopicArn"
+
+aws sns subscribe --topic-arn arn:aws:sns:us-east-2:414886453809:ELB-Check --protocol email --notification-endpoint enjaychannle@gmail.com
+
+
+aws cloudwatch put-metric-alarm --alarm-name elb-tg-notification --namespace AWS/ApplicationELB --metric-name HealthyHostCount --statistic Average --period 300 --threshold 2 --comparison-operator LessThanThreshold --dimensions Name=LoadBalancer,Value=app/Lab4/21c625d10ad70f58 Name=TargetGroup,Value=targetgroup/Lab4-Target/1d11c98987dba52e --evaluation-periods 1 --alarm-actions arn:aws:sns:us-east-2:414886453809:ELB-Check
+
+
+
+
+
+aws elbv2 deregister-targets --target-group-arn arn:aws:elasticloadbalancing:us-east-2:414886453809:targetgroup/Lab4-Target/1d11c98987dba52e --targets Id=i-074256336ec2eaabe
